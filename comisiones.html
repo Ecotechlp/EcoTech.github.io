@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Comisiones</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+
+        .commission-table-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 700px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            text-align: center;
+            padding: 10px;
+        }
+
+        table th {
+            background-color: #4c0a7c;
+            color: white;
+            font-weight: bold;
+        }
+
+        table td input {
+            width: 100%;
+            height: 30px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        table td input:focus {
+            background-color: #e8f0ff;
+        }
+
+        .calculate-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #4c0a7c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+
+        .calculate-btn:hover {
+            background-color: #3a065c;
+        }
+
+        .result {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="commission-table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Valor</th>
+                    <th>Comisión (%)</th>
+                    <th>Total Comisión</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <td><input type="text" placeholder="Producto"></td>
+                    <td><input type="number" placeholder="Valor"></td>
+                    <td><input type="number" placeholder="Porcentaje"></td>
+                    <td><input type="text" readonly></td>
+                </tr>
+                <tr>
+                    <td><input type="text" placeholder="Producto"></td>
+                    <td><input type="number" placeholder="Valor"></td>
+                    <td><input type="number" placeholder="Porcentaje"></td>
+                    <td><input type="text" readonly></td>
+                </tr>
+                <tr>
+                    <td><input type="text" placeholder="Producto"></td>
+                    <td><input type="number" placeholder="Valor"></td>
+                    <td><input type="number" placeholder="Porcentaje"></td>
+                    <td><input type="text" readonly></td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="calculate-btn" onclick="calculateCommissions()">Calcular Comisiones</button>
+        <button class="calculate-btn" onclick="exportToExcel()">Exportar a Excel</button>
+        <div class="result" id="totalResult"></div>
+    </div>
+
+    <script>
+        function calculateCommissions() {
+            const rows = document.querySelectorAll("#tableBody tr");
+            let totalCommission = 0;
+
+            rows.forEach(row => {
+                const valueInput = row.cells[1].querySelector("input");
+                const commissionInput = row.cells[2].querySelector("input");
+                const totalInput = row.cells[3].querySelector("input");
+
+                const value = parseFloat(valueInput.value) || 0;
+                const commissionRate = parseFloat(commissionInput.value) || 0;
+
+                // Calcula la comisión
+                const commission = (value * commissionRate) / 100;
+                totalInput.value = commission.toFixed(2);
+
+                // Suma al total
+                totalCommission += commission;
+            });
+
+            // Muestra el total de las comisiones
+            document.getElementById("totalResult").textContent = `Total Comisión: $${totalCommission.toFixed(2)}`;
+        }
+
+        function exportToExcel() {
+            const rows = document.querySelectorAll("#tableBody tr");
+            const data = [["Producto", "Valor", "Comisión (%)", "Total Comisión"]];
+
+            rows.forEach(row => {
+                const product = row.cells[0].querySelector("input").value || "";
+                const value = row.cells[1].querySelector("input").value || "0";
+                const commissionRate = row.cells[2].querySelector("input").value || "0";
+                const total = row.cells[3].querySelector("input").value || "0";
+
+                data.push([product, value, commissionRate, total]);
+            });
+
+            // Crear un libro de Excel
+            const worksheet = XLSX.utils.aoa_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Comisiones");
+
+            // Descargar el archivo
+            XLSX.writeFile(workbook, "Comisiones.xlsx");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso con Código</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #4c0a7c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #39065e;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+    <script>
+        function verificarCodigo() {
+            const codigo = document.getElementById("codigo").value;
+            const codigoCorrecto = "12345"; // Cambia esto por el código que desees
+
+            if (codigo === codigoCorrecto) {
+                window.location.href = "comisiones.html"; // Cambia esto por la página a la que deseas redirigir
+            } else {
+                document.getElementById("mensaje-error").innerText = "Código incorrecto. Inténtalo nuevamente.";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Acceso con Código</h1>
+    <p>Ingresa el código para acceder:</p>
+    <input type="text" id="codigo" placeholder="Escribe el código aquí">
+    <button onclick="verificarCodigo()">Ingresar</button>
+    <p id="mensaje-error" class="error"></p>
+</body>
